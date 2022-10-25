@@ -1,9 +1,10 @@
-from config.api_key import API_KEY
-from model.main_dao import MainDAO
 import urllib.request
 import urllib.error
 import urllib.parse
 import json
+
+from client.config.api_key import API_KEY
+from client.model.main_dao import MainDAO
 
 
 class MetersDAO(MainDAO):
@@ -53,4 +54,11 @@ class MetersDAO(MainDAO):
         account_addresses = json_object['gateways']
         result_helper = account_addresses[0]['meters']
         return result_helper
+
+    def get_temp_by_zip(self, zipcode):
+        api_request = 'https://api.openweathermap.org/data/2.5/weather?units=imperial&zip=' + zipcode + ',PR&appid=2866223ac996dbd86e75905027493095'
+        response = urllib.request.urlopen(api_request)
+        response = response.read()
+        json_object = json.loads(response.decode())
+        return json_object
 

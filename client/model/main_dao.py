@@ -9,5 +9,5 @@ class MainDAO:
                                                                               db_credentials['password'],
                                                                               db_credentials['dbport'],
                                                                               db_credentials['host'])
-        print("connection url:  ", connection_url)
+    #    print("connection url:  ", connection_url)
         self.conn = psycopg2.connect(connection_url)
