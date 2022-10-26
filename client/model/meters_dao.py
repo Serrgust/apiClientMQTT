@@ -4,6 +4,7 @@ import urllib.parse
 import json
 
 from client.config.api_key import API_KEY
+from client.config.api_key import WEATHER_KEY
 from client.model.main_dao import MainDAO
 
 
@@ -56,7 +57,7 @@ class MetersDAO(MainDAO):
         return result_helper
 
     def get_temp_by_zip(self, zipcode):
-        api_request = 'https://api.openweathermap.org/data/2.5/weather?units=imperial&zip=' + zipcode + ',PR&appid=2866223ac996dbd86e75905027493095'
+        api_request = 'https://api.openweathermap.org/data/2.5/weather?units=imperial&zip=' + zipcode + ',PR&appid=' + WEATHER_KEY
         response = urllib.request.urlopen(api_request)
         response = response.read()
         json_object = json.loads(response.decode())

@@ -5,7 +5,7 @@ import time
 from handlers.meters import Meters
 import threading
 
-broker_url = "broker.hivemq.com"
+broker_url = "192.168.4.133"
 broker_port = 1883
 
 username = 'admin'
@@ -95,7 +95,7 @@ def retrieve_sites_from_api(client):
     publish_sites(client, sites)
 
 
-def publish_temp(client, temp_json, counter):
+def publish_temp(client, temp_json):
     for content in temp_json:
         msg = json.dumps(content)
         print(content)
@@ -105,10 +105,9 @@ def publish_temp(client, temp_json, counter):
 
 def retrieve_temp_from_api(client):
     while 1:
-        counter = 0
         temp = Meters().get_temperature_by_zip()
-        publish_temp(client, temp, counter)
-        time.sleep(180)
+        publish_temp(client, temp)
+        time.sleep(360)
 
 
 def on_meter_date_messages(client, userdata, msg):

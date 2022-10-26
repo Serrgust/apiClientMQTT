@@ -45,6 +45,7 @@ def build_temp_dict(self, readings):
     return {
         'Temp': readings['main']['temp'],
         'Humidity': readings['main']['humidity'],
+        'Clouds': readings['clouds']['all'],
         'City': readings['name'],
         'Country': readings['sys']['country'],
         'Weather Condition': readings['weather'][0]['main'] + ' -' + readings['weather'][0]['description'],
