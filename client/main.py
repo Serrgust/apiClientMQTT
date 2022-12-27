@@ -4,12 +4,14 @@ import json
 import time
 from handlers.meters import Meters
 import threading
+import base64
 
-broker_url = "192.168.4.133"
+broker_url = "broker.hivemq.com"
 broker_port = 1883
 
 username = 'admin'
 password = '1234'
+
 mqtt.Client.connected_flag = False  # create flag in class
 
 
@@ -86,7 +88,7 @@ def retrieve_meter_from_api(client):
     while 1:
         all_meters = Meters().get_every_meter_summary_reading()
         publish_meter(client, all_meters)
-        time.sleep(180)
+        time.sleep(240)
 
 
 def retrieve_sites_from_api(client):
@@ -107,7 +109,7 @@ def retrieve_temp_from_api(client):
     while 1:
         temp = Meters().get_temperature_by_zip()
         publish_temp(client, temp)
-        time.sleep(360)
+        time.sleep(600)
 
 
 def on_meter_date_messages(client, userdata, msg):
@@ -119,14 +121,20 @@ def on_meter_date_messages(client, userdata, msg):
 
 
 def run():
+    client = connect_mqtt()
     a = {"timestamp": 1666275764993, "metrics": [
         {"name": "Request/Data/DB_Request", "timestamp": 1666275763993, "dataType": "String",
          "value": "32011,2022-10-14,2022-10-15,2022-10-16,2022-10-17,2022-10-18,2022-10-19,2022-10-20"}], "seq": 14}
-    client = connect_mqtt()
+    vid_filename = "C:/Users/Gustavo Serrano/Downloads/videoplayback.mp4"
+    # with open("C:/Users/Gustavo Serrano/Downloads/heyyy.mp4", "rb") as img_file:
+    #     b64_string = base64.b64encode(img_file.read())
+    # client.publish("image/image", b64_string.decode('utf-8'))
+    # print(b64_string.decode('utf-8'))
     client.publish("spBv1.0/DB_Request/DDATA/EDGE/Request", str(a))
     client.subscribe("history/kwh")
-    #kwh_callback = threading.Thread(target=retrieve_kw_from_api(client), daemon=True)
-    #kw_callback = threading.Thread(target=retrieve_kwh_from_api(client), daemon=True)
+    client.publish("video/video", vid_filename)
+    # kwh_callback = threading.Thread(target=retrieve_kw_from_api(client), daemon=True)
+    # kw_callback = threading.Thread(target=retrieve_kwh_from_api(client), daemon=True)
     retrieve_temp = threading.Thread(target=retrieve_temp_from_api, args=(client,), daemon=True)
     retrieve_meter = threading.Thread(target=retrieve_meter_from_api, args=(client,), daemon=True)
     retrieve_meter.start()
