@@ -6,7 +6,7 @@ from handlers.meters import Meters
 import threading
 import base64
 
-broker_url = "broker.hivemq.com"
+broker_url = "192.168.4.133"
 broker_port = 1883
 
 username = 'admin'
@@ -132,13 +132,15 @@ def run():
     # print(b64_string.decode('utf-8'))
     client.publish("spBv1.0/DB_Request/DDATA/EDGE/Request", str(a))
     client.subscribe("history/kwh")
-    client.publish("video/video", vid_filename)
-    # kwh_callback = threading.Thread(target=retrieve_kw_from_api(client), daemon=True)
-    # kw_callback = threading.Thread(target=retrieve_kwh_from_api(client), daemon=True)
+    # client.publish("video/video", vid_filename)
+    kwh_callback = threading.Thread(target=retrieve_kw_from_api(client), daemon=True)
+    kw_callback = threading.Thread(target=retrieve_kwh_from_api(client), daemon=True)
     retrieve_temp = threading.Thread(target=retrieve_temp_from_api, args=(client,), daemon=True)
     retrieve_meter = threading.Thread(target=retrieve_meter_from_api, args=(client,), daemon=True)
     retrieve_meter.start()
     retrieve_temp.start()
+    kw_callback.start()
+    kwh_callback.start()
     try:
         while True:
             # client.publish("spBv1.0/DB_Request/DDATA/EDGE/Request", str(a))
